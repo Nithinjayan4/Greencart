@@ -8,6 +8,7 @@ const Navbar = () => {
 
   const { user, setUser, setshowUserLogin, navigate } = useAppContext();
 
+
   const logout = async () => {
     setUser(null);
     navigate("/");
