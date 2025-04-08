@@ -107,7 +107,7 @@ const Cart = () => {
               className="cursor-pointer mx-auto"
             >
               <img
-                src={assets.remove_icon}
+                src={assets.refresh_icon}
                 alt="remove"
                 className="inline-block w-6 h-6"
               />
