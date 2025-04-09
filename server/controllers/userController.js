@@ -42,50 +42,80 @@ export const register = async (req, res) => {
   }
 };
 
-
 //Login User : POST /api/user/login
 
 export const login = async (req, res) => {
-    try{
-      const {email,password}=req.body;
-  
-      if(!email ||!password)
-        return res.status(400).json({success:false, message:'Email and password are required'})
-  
-      const user = await User.findOne({email})
+  try {
+    const { email, password } = req.body;
 
-      if(!user){
-        return res.status(404).json({success:false, message:'invalid email or password'})
-      }
+    if (!email || !password)
+      return res
+        .status(400)
+        .json({ success: false, message: "Email and password are required" });
 
-      const isMatch = await bcrypt.compare(password, user.password)
+    const user = await User.findOne({ email });
 
-      if(!isMatch)
-        return res.status(404).json({success:false, message:'invalid email or password'})
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "invalid email or password" });
+    }
 
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
-  
-      res.cookie("token", token, {
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Set to 'none' if using CSRF protection
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-      });
-  
-      return res.json({
-        success: true,
-        user: { email: user.email, name: user.name },
-      });
+    const isMatch = await bcrypt.compare(password, user.password);
 
-  
-    }catch(error){
-        console.error(error.message);
+    if (!isMatch)
+      return res
+        .status(404)
+        .json({ success: false, message: "invalid email or password" });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Set to 'none' if using CSRF protection
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    });
+
+    return res.json({
+      success: true,
+      user: { email: user.email, name: user.name },
+    });
+  } catch (error) {
+    console.error(error.message);
 
     res.json({ success: false, message: error.message });
-
-  
-    }
   }
+};
+
+//check authenticated user : /api/user/is-auth
+
+export const isAuth = async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+      return res.json({ success: true, user });
+    } catch (error) {
+      console.error(error.message);
+      res.json({ success: false, message: error.message });
+    }
+  };
   
+//logout User : /api/user/logout
+
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
+
+    return res.json({ success: true, message: "Logged out" });
+  } catch (error) {
+    console.error(error.message);
+
+    res.json({ success: false, message: error.message });
+  }
+};
