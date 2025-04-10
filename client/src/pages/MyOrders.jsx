@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppContext } from "../context/appContext";
-import { dummyOrders } from "../assets/assets";
+
 import { useEffect } from "react";
 
 const MyOrders = () => {
