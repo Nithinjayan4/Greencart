@@ -1,10 +1,11 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import { useAppContext } from "../../context/appContext";
+import toast from "react-hot-toast";
 
 const SellerLayout = () => {
 
-const {setIsSeller} = useAppContext();
+const {axios, navigate} = useAppContext();
 
    
 
@@ -16,11 +17,20 @@ const {setIsSeller} = useAppContext();
         { name: "Orders", path: "/seller/orders", icon: assets.order_icon },
     ];
 
-    const logout = async() => {
-        setIsSeller(false)
-
-
-    }
+    const logout = async () => {
+        try {
+          const { data } = await axios.post('/api/seller/logout'); // <-- change GET to POST
+          if (data.success === true) {
+            toast.success(data.message);
+            navigate('/');
+          } else {
+            toast.error(data.message);
+          }
+        } catch (error) {
+          toast.error(error.message);
+        }
+      };
+      
 
     return (
         <>
