@@ -63,6 +63,6 @@ export const getAllOrders = async (req, res) => {
     }).populate("items.product address");
     res.json({ success: true, orders });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };

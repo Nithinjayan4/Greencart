@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -14,21 +15,32 @@ const Navbar = () => {
     searchQuery,
     setSearchQuery,
     getCartCount,
-
+    axios,
   } = useAppContext();
 
   const logout = async () => {
+    try {
+      const { data } = await axios.get("/api/user/logout");
+      if (data.success) {
+        toast.success(data.message);
+        setUser(null);
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+
     setUser(null);
     navigate("/");
   };
 
-
-  useEffect(()=>{
-    if(searchQuery.length > 0){
-      navigate("/products")
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      navigate("/products");
     }
-
-  },[searchQuery])
+  }, [searchQuery]);
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
       <NavLink to="/" onClick={() => setOpen(false)}>
@@ -43,7 +55,7 @@ const Navbar = () => {
 
         <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
           <input
-          onChange={(e)=>setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
             type="text"
             placeholder="Search products"
@@ -92,7 +104,7 @@ const Navbar = () => {
         )}
       </div>
       <div className="flex items-center gap-6 sm:hidden">
-      <div
+        <div
           onClick={() => navigate("/cart")}
           className="relative cursor-pointer"
         >
@@ -106,17 +118,14 @@ const Navbar = () => {
           </button>
         </div>
 
-      <button
-        onClick={() => (open ? setOpen(false) : setOpen(true))}
-        aria-label="Menu"
-        className=""
-      >
-        <img src={assets.menu_icon} alt="menu" />
-      </button>
-
+        <button
+          onClick={() => (open ? setOpen(false) : setOpen(true))}
+          aria-label="Menu"
+          className=""
+        >
+          <img src={assets.menu_icon} alt="menu" />
+        </button>
       </div>
-
-      
 
       {/* Mobile Menu */}
       {open && (
