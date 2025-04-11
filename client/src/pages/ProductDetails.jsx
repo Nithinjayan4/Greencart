@@ -16,10 +16,11 @@ const ProductDetails = () => {
   useEffect(() => {
     if (product) {
       const related = products
-        .filter(item =>
-    item._id !== product._id &&
-    item.category.toLowerCase() === product.category.toLowerCase()
-)
+        .filter(
+          (item) =>
+            item._id !== product._id &&
+            item.category.toLowerCase() === product.category.toLowerCase()
+        )
 
         .slice(0, 5);
       setRelatedProducts(related);
@@ -91,11 +92,11 @@ const ProductDetails = () => {
 
             <p className="text-base font-medium mt-6">About Product</p>
             <ul className="list-disc ml-4 text-gray-500/70">
-  {Array.isArray(product?.description) &&
-    product.description.map((desc, index) => (
-      <li key={index}>{desc}</li>
-    ))}
-</ul>
+              {Array.isArray(product?.description) &&
+                product.description.map((desc, index) => (
+                  <li key={index}>{desc}</li>
+                ))}
+            </ul>
 
             <div className="flex items-center mt-10 gap-4 text-base">
               <button
