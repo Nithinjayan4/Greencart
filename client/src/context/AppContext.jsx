@@ -48,7 +48,8 @@ export const AppContextProvider = ({ children }) => {
         setUser(data.user);
         setCartItems(data.user.cartItems);
       }
-    } catch (er) {
+    } catch (error) {
+      console.error("Error fetching user:", error.message); 
       setUser(null);
     }
   };
