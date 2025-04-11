@@ -91,10 +91,11 @@ const ProductDetails = () => {
 
             <p className="text-base font-medium mt-6">About Product</p>
             <ul className="list-disc ml-4 text-gray-500/70">
-              {product.description.map((desc, index) => (
-                <li key={index}>{desc}</li>
-              ))}
-            </ul>
+  {Array.isArray(product?.description) &&
+    product.description.map((desc, index) => (
+      <li key={index}>{desc}</li>
+    ))}
+</ul>
 
             <div className="flex items-center mt-10 gap-4 text-base">
               <button
