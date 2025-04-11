@@ -193,7 +193,7 @@ export const getUserOrders = async (req, res) => {
       userId,
       $or: [{ paymentType: "COD" }, { isPaid: true }],
     })
-      .populate("items.product address")
+    .populate("items.product address")
       .sort({ createdAt: -1 });
 
     return res.json({ success: true, orders });

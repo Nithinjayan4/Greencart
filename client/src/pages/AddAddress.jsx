@@ -39,6 +39,7 @@ const {axios, user, navigate } = useAppContext()
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    console.log(address);
     try{
       const { data } = await axios.post('/api/address/add', {
   address,

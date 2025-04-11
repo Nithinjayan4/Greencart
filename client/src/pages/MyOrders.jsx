@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
@@ -16,9 +17,12 @@ const MyOrders = () => {
   
       if (data.success) {
         setMyOrders(data.orders);
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
-      console.error(error.message);
+      toast.error(error.response?.data?.message || "Failed to fetch orders");
+      console.error("Error fetching orders:", error);
     }
   };
 
