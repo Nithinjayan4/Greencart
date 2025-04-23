@@ -1,4 +1,4 @@
-import express from 'express';
+import express from 'express'
 import authUser from '../middleware/authUser.js';
 import { addAddress, getAddress } from '../controllers/addressController.js';
 

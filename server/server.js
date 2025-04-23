@@ -9,9 +9,10 @@ import sellerRouter from "./routes/sellerRoute.js";
 import connectCloudinary from "./configs/cloudinary.js";
 import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
-import addressRouter from "./routes/adressRoute.js";
+import addressRouter from "./routes/addressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
-import { stripeWebhook } from "./controllers/orderController.js";
+import { stripeWebhooks } from "./controllers/orderController.js";
+
 
 const app = express();
 
@@ -23,7 +24,7 @@ await connectCloudinary()
 //Allow Multiple origin
 const allowedOrigins = ["http://localhost:5173","https://greencart-seven.vercel.app"];
 
-app.post('/stripe',express.raw({ type: 'application/json' }),stripeWebhook);
+app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 //middleware
 app.use(express.json());

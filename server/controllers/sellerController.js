@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 
-//seller login
-
-export const SellerLogin = (req, res) => {
+// Login Seller: /api/seller/login
+export const sellerLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -13,37 +12,37 @@ export const SellerLogin = (req, res) => {
       const token = jwt.sign({ email }, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
+
       res.cookie("sellerToken", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Set to 'none' if using CSRF protection
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+        httpOnly: true, // Prevent javascript to access cookie
+        secure: process.env.NODE_ENV === "production", // Use Swcure cookie in production
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // CSRF protection
+        maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie expiration time
       });
-      return res.json({
-        success: true,
-        message: "Seller logged in successfully",
-      });
+
+      return res.json({ success: true, message: "Logged In" });
     } else {
-      return res.json({ success: false, message: "Invalid credentials" });
+      return res.json({ success: false, message: "Invalid Credentials" });
     }
   } catch (error) {
-    console.error(error.message);
-    res.json({ success: false, message: error.message });
+    console.log(error.message);
+    return res.json({ success: false, message: error.message });
   }
 };
 
-//check authenticated seller : /api/seller/is-auth
-
+// Check SellerAuth : /api/seller/is-auth
+// Check SellerAuth : /api/seller/is-auth
 export const isSellerAuth = async (req, res) => {
   try {
     return res.json({ success: true });
   } catch (error) {
-    console.error(error.message);
-    res.json({ success: false, message: error.message });
+    console.log(error.message);
+    return res.json({ success: false, message: error.message });
   }
 };
 
-//seller logout : /api/seller/logout
+
+// Logout Seller: /api/seller/logout
 export const sellerLogout = async (req, res) => {
   try {
     res.clearCookie("sellerToken", {
@@ -51,11 +50,9 @@ export const sellerLogout = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
-
-    return res.json({ success: true, message: "Logged out" });
+    return res.json({ success: true, message: "Logged Out" });
   } catch (error) {
-    console.error(error.message);
-
-    res.json({ success: false, message: error.message });
+    console.log(error.message);
+    return res.json({ success: false, message: error.message });
   }
 };

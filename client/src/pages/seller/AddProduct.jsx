@@ -11,7 +11,7 @@ const AddProduct = () => {
   const [price, setPrice] = useState("");
   const [offerPrice, setOfferPrice] = useState("");
 
-  const {axios} = useAppContext();
+  const { axios } = useAppContext();
 
   const onSubmitHandler = async (event) => {
     try {
@@ -21,18 +21,19 @@ const AddProduct = () => {
         name,
         description: description.split("\n"),
         category,
-        price,
-        offerPrice,
+        price: Number(price),
+        offerPrice: Number(offerPrice),
       };
+
       const formData = new FormData();
       formData.append("productData", JSON.stringify(productData));
-      // Append product images to the form data
       for (let i = 0; i < files.length; i++) {
         formData.append("images", files[i]);
       }
 
-      const {data} = await axios.post("/api/product/add", formData);
-      if(data.success) {
+      const { data } = await axios.post("/api/product/add", formData);
+
+      if (data.success) {
         toast.success(data.message);
         setName("");
         setDescription("");
@@ -40,21 +41,21 @@ const AddProduct = () => {
         setPrice("");
         setOfferPrice("");
         setFiles([]);
-        } else {
+      } else {
         toast.error(data.message);
       }
-
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
   return (
-    <div className="no-scrollbar flex-1 h-[95hv] overflow-scroll flex flex-col justify-between ">
+    <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
       <form
         onSubmit={onSubmitHandler}
         className="md:p-10 p-4 space-y-5 max-w-lg"
       >
+        {/* Image Upload */}
         <div>
           <p className="text-base font-medium">Product Image</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -65,14 +66,13 @@ const AddProduct = () => {
                   <input
                     onChange={(e) => {
                       const updatedFiles = [...files];
-                      updatedFiles[index] = e.target.files[0]; // this is safe now
+                      updatedFiles[index] = e.target.files[0];
                       setFiles(updatedFiles);
                     }}
                     type="file"
                     id={`image${index}`}
                     hidden
                   />
-
                   <img
                     className="max-w-24 cursor-pointer"
                     src={
@@ -88,6 +88,8 @@ const AddProduct = () => {
               ))}
           </div>
         </div>
+
+        {/* Product Name */}
         <div className="flex flex-col gap-1 max-w-md">
           <label className="text-base font-medium" htmlFor="product-name">
             Product Name
@@ -102,11 +104,10 @@ const AddProduct = () => {
             required
           />
         </div>
+
+        {/* Description */}
         <div className="flex flex-col gap-1 max-w-md">
-          <label
-            className="text-base font-medium"
-            htmlFor="product-description"
-          >
+          <label className="text-base font-medium" htmlFor="product-description">
             Product Description
           </label>
           <textarea
@@ -118,6 +119,8 @@ const AddProduct = () => {
             placeholder="Type here"
           ></textarea>
         </div>
+
+        {/* Category */}
         <div className="w-full flex flex-col gap-1">
           <label className="text-base font-medium" htmlFor="category">
             Category
@@ -136,6 +139,8 @@ const AddProduct = () => {
             ))}
           </select>
         </div>
+
+        {/* Price & Offer Price */}
         <div className="flex items-center gap-5 flex-wrap">
           <div className="flex-1 flex flex-col gap-1 w-32">
             <label className="text-base font-medium" htmlFor="product-price">
@@ -166,6 +171,8 @@ const AddProduct = () => {
             />
           </div>
         </div>
+
+        {/* Submit Button */}
         <button className="px-8 py-2.5 bg-primary text-white font-medium rounded cursor-pointer">
           ADD
         </button>
